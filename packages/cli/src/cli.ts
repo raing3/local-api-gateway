@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /* eslint-disable no-console */
 import program from 'commander';
 import { createContext } from './utils/create-context';
