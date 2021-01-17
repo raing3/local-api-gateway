@@ -17,7 +17,7 @@ export class GatewayIntegrationHandler extends DockerIntegrationHandler {
                         context: process.cwd(),
                         dockerfile: dockerFilePath
                     },
-                    ports: ['80:80'],
+                    ports: [`${context.config.gateway.host}:${context.config.gateway.port}:80`],
                     volumes: [{ type: 'bind', source: process.cwd(), target: '/local-api-gateway' }]
                 }
             }

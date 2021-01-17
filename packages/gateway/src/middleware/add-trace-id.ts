@@ -1,8 +1,8 @@
-import { Request, RequestHandler } from 'express';
+import { NextFunction, Request, RequestHandler, Response } from 'express';
 import { randexp } from 'randexp';
 
 export const addTraceId = (traceIdHeaderName: string): RequestHandler => {
-    return (req: Request): void => {
+    return (req: Request, res: Response, next: NextFunction): void => {
         const id = randexp(/1-[0-9]{8}-[0-9a-f]{24}/);
 
         if (req.headers[traceIdHeaderName]) {
@@ -10,5 +10,7 @@ export const addTraceId = (traceIdHeaderName: string): RequestHandler => {
         } else {
             req.headers[traceIdHeaderName] = `Root=${id}`;
         }
+
+        next();
     };
 };

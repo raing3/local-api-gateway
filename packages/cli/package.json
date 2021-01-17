@@ -1,6 +1,6 @@
 {
   "name": "@local-api-gateway/cli",
-  "version": "0.1.0",
+  "version": "0.1.1-1",
   "description": "CLI",
   "author": "Richard Ainger <raing3@gmail.com>",
   "scripts": {

@@ -33,7 +33,7 @@ export const parseConfig = (configPath: string): Config => {
     } as Config;
 
     Object.entries(config.integrations).forEach(([integrationName, integration]) => {
-        if (!integration?.destination) {
+        if (!integration.destination) {
             try {
                 integration.destination = resolveUriLocalPath(integration.source);
             } catch (error) {
