@@ -1,0 +1,14 @@
+{
+  "name": "root",
+  "private": true,
+  "scripts": {
+    "build": "lerna exec --concurrency 4 -- npm run build --silent --if-present",
+    "build:watch": "lerna exec --concurrency 4 -- npm run build:watch --silent --if-present",
+    "lint": "lerna exec --concurrency 4 --no-bail -- npm run lint --silent",
+    "lint:fix": "lerna exec --concurrency 4 --no-bail -- npm run lint:fix --silent",
+    "postinstall": "lerna bootstrap --ci"
+  },
+  "devDependencies": {
+    "lerna": "^3.20.2"
+  }
+}
