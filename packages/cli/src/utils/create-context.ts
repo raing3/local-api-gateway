@@ -34,7 +34,7 @@ export const createContext = (configPath: string): Context => {
         context.integrations[integrationName] = {
             name: integrationName,
             type: integrationConfig.type as string,
-            destination: integrationConfig.destination,
+            destination: path.resolve(integrationConfig.destination),
             services: {},
             config: integrationConfig
         };
