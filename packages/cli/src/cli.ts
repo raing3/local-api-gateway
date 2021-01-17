@@ -11,7 +11,7 @@ const context = createContext('local-api-gateway.yml');
 
 const dockerComposePassthrough = async (args: string[]) => {
     try {
-        const command = `sudo docker-compose ${args.join(' ')}`;
+        const command = `docker-compose ${args.join(' ')}`;
 
         console.log('Executing command:', chalk.black.bgWhite(command));
         await execa(command, { shell: true, stdio: 'inherit', cwd: context.directories.build });
