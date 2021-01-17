@@ -1,6 +1,6 @@
 {
   "name": "@local-api-gateway/gateway",
-  "version": "0.1.0-2",
+  "version": "0.1.0-3",
   "description": "Gateway",
   "author": "Richard Ainger <raing3@gmail.com>",
   "main": "src/server.js",
