@@ -27,7 +27,7 @@ Object.values(config.integrations).forEach(integration => {
     integration.routes.forEach(route => {
         const proxy = createProxyMiddleware({
             target: `http://${route.service}:${route.port}`,
-            changeOrigin: true,
+            changeOrigin: false,
             logLevel: 'debug'
         });
 
