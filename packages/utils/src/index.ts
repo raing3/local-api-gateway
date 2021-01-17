@@ -1,18 +1,6 @@
 import { parse } from 'yaml';
 import fs from 'fs';
 import { Config } from '@local-api-gateway/types';
-import path from 'path';
-
-export const resolveUriLocalPath = (uri: string): string => {
-    const parsed = new URL(uri);
-
-    switch (parsed.protocol) {
-        case 'file:':
-            return path.relative(process.cwd(), path.resolve(uri.split(':')[1]));
-    }
-
-    throw new Error(`Unsupported URI, cannot handle ${uri}`);
-};
 
 export const parseConfig = (configPath: string): Config => {
     const parsed = parse(fs.readFileSync(configPath, 'utf8'));
@@ -25,6 +13,10 @@ export const parseConfig = (configPath: string): Config => {
             ...parsed?.gateway
         },
         middleware: {
+            'trace-id': {
+                header: 'X-Trace-Id',
+                ...parsed?.middleware?.['trace-id']
+            },
             ...parsed?.middleware
         },
         integrations: {
@@ -34,17 +26,13 @@ export const parseConfig = (configPath: string): Config => {
 
     Object.entries(config.integrations).forEach(([integrationName, integration]) => {
         if (!integration.destination) {
-            try {
-                integration.destination = resolveUriLocalPath(integration.source);
-            } catch (error) {
-                integration.destination = `./${integrationName}`;
-            }
+            integration.destination = `./${integrationName}`;
+        }
+
+        if (typeof integration.build === 'string') {
+            integration.build = [integration.build];
         }
     });
-
-    if (config.gateway.source) {
-        config.gateway.source = resolveUriLocalPath(config.gateway.source);
-    }
 
     return config;
 };

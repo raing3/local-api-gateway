@@ -4,10 +4,14 @@ import path from 'path';
 import compareVersions from 'compare-versions';
 import { Dictionary } from '@local-api-gateway/types/src';
 import { clone } from '@local-api-gateway/utils';
-import { resolveNewServiceName } from './resolve-new-service-name';
+import { resolveNewServiceName } from '../utils/resolve-new-service-name';
 
 const resolvePaths = (dockerCompose: DockerCompose, integration: IntegrationContext, buildPath: string) => {
     const resolvePath = (...pathSegments: string[]): string => {
+        if ('config' in integration && integration.config.context) {
+            pathSegments.unshift(integration.config.context);
+        }
+
         return path.relative(buildPath, path.resolve(integration.destination, ...pathSegments)) || '.';
     };
 

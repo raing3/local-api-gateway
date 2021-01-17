@@ -1,14 +1,14 @@
-import { Context, DockerCompose, IntegrationContext } from '../types';
-import { DockerComposeIntegrationHandler } from './docker-compose-integration-handler';
+import {Context, DockerCompose, DockerIntegrationContext, IntegrationHandler} from '../types';
+import path from "path";
 
-export class DockerIntegrationHandler extends DockerComposeIntegrationHandler {
-    generateDockerCompose(context: Context, integration: IntegrationContext): DockerCompose {
+export class DockerIntegrationHandler implements IntegrationHandler {
+    generateDockerCompose(context: Context, integration: DockerIntegrationContext): DockerCompose {
         return {
             version: '3.8',
             services: {
                 [integration.name]: {
                     build: {
-                        context: integration.destination
+                        context: path.resolve(integration.destination, integration.config.context || '')
                     }
                 }
             }

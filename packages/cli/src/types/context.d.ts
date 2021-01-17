@@ -46,5 +46,7 @@ export type Context = {
     files: {
         config: string;
         dockerCompose: string;
+        gatewayConfig: string;
+        gatewayDockerfile: string;
     }
 };

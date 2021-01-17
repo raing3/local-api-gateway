@@ -10,10 +10,22 @@ export type RouteConfig = {
     paths: string[];
 };
 
+export type PathSource = {
+    type: 'path';
+    url: string;
+};
+
+export type VcsSource = {
+    type: 'vcs',
+    url: string;
+}
+
 export type IntegrationConfigBase = {
     type: string;
-    source: string;
+    source: PathSource|VcsSource;
+    build: string[];
     destination: string;
+    context?: string;
     routes: RouteConfig[];
 };
 
@@ -27,14 +39,24 @@ export type DockerComposeIntegrationConfig = IntegrationConfigBase & {
 
 export type IntegrationConfig = IntegrationConfigBase|DockerIntegrationConfig|DockerComposeIntegrationConfig;
 
+export type TraceIdMiddlewareConfig = {
+    header: string;
+}
+
+export type CorsMiddlewareConfig = {
+    'access-control-allow-origin'?: string;
+}
+
 export type Config = {
     name: string;
     gateway: {
         host: string;
         port: number;
         source?: string;
-        traceIdHeaderName: string;
     },
-    middleware: Dictionary<MiddlewareConfig>;
+    middleware: Dictionary<MiddlewareConfig> & {
+        'trace-id': TraceIdMiddlewareConfig;
+        cors: CorsMiddlewareConfig;
+    };
     integrations: Dictionary<IntegrationConfig>;
 };

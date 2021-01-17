@@ -22,7 +22,9 @@ export const createContext = (configPath: string): Context => {
         },
         files: {
             config: path.resolve(configPath),
-            dockerCompose: path.resolve(buildDirectory, 'docker-compose.yml')
+            dockerCompose: path.resolve(buildDirectory, 'docker-compose.yml'),
+            gatewayConfig: path.resolve(buildDirectory, 'gateway.config.yml'),
+            gatewayDockerfile: path.resolve(buildDirectory, 'Dockerfile-gateway')
         }
     };
 

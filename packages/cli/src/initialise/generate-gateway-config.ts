@@ -1,6 +1,6 @@
 import { Context } from '../types';
 import { clone } from '@local-api-gateway/utils';
-import { resolveNewServiceName } from './resolve-new-service-name';
+import { resolveNewServiceName } from '../utils/resolve-new-service-name';
 import { Config } from '@local-api-gateway/types/src';
 
 export const generateGatewayConfig = (context: Context): Config => {
