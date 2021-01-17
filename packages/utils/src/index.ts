@@ -13,6 +13,9 @@ export const parseConfig = (configPath: string): Config => {
             ...parsed?.gateway
         },
         middleware: {
+            cors: {
+                ...parsed?.middleware?.cors
+            },
             'trace-id': {
                 header: 'X-Trace-Id',
                 ...parsed?.middleware?.['trace-id']
