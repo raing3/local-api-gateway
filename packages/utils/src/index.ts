@@ -27,6 +27,10 @@ export const parseConfig = (configPath: string): Config => {
         }
     } as Config;
 
+    if (typeof config.middleware?.cors?.['access-control-allow-origin'] === 'string') {
+        config.middleware.cors['access-control-allow-origin'] = [config.middleware.cors['access-control-allow-origin']];
+    }
+
     Object.entries(config.integrations).forEach(([integrationName, integration]) => {
         if (!integration.destination) {
             integration.destination = `./${integrationName}`;

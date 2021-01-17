@@ -44,7 +44,10 @@ export type TraceIdMiddlewareConfig = {
 }
 
 export type CorsMiddlewareConfig = {
-    'access-control-allow-origin'?: string;
+    'access-control-allow-origin'?: string[];
+    'access-control-allow-methods'?: string;
+    'access-control-allow-headers'?: string;
+    'access-control-allow-credentials'?: string;
 }
 
 export type Config = {
