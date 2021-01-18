@@ -1,7 +1,7 @@
 import { Context } from '../types';
 import { clone } from '@local-api-gateway/utils';
 import { resolveNewServiceName } from '../utils/resolve-new-service-name';
-import { Config } from '@local-api-gateway/types/src';
+import { Config } from '@local-api-gateway/types';
 
 export const generateGatewayConfig = (context: Context): Config => {
     const config = clone(context.config);

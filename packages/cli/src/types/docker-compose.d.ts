@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { Dictionary } from '@local-api-gateway/types/src';
+import { Dictionary } from '@local-api-gateway/types';
 
 export type DockerCompose = {
     version: string;

@@ -2,7 +2,7 @@ import { Context, DockerCompose, IntegrationContext } from '../types';
 import { getIntegrationHandler } from '../integration-handler';
 import path from 'path';
 import compareVersions from 'compare-versions';
-import { Dictionary } from '@local-api-gateway/types/src';
+import { Dictionary } from '@local-api-gateway/types';
 import { clone } from '@local-api-gateway/utils';
 import { resolveNewServiceName } from '../utils/resolve-new-service-name';
 

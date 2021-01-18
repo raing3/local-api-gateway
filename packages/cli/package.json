@@ -3,6 +3,11 @@
   "version": "0.1.0-6",
   "description": "CLI",
   "author": "Richard Ainger <raing3@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/raing3/local-api-gateway.git",
+    "directory": "packages/cli"
+  },
   "scripts": {
     "clean": "rimraf ./dist",
     "build": "npm run clean && tsc",
@@ -15,7 +20,7 @@
     "local-api-gateway": "dist/cli.js"
   },
   "dependencies": {
-    "@local-api-gateway/utils": "^0.1.0",
+    "@local-api-gateway/utils": "^0.1.0-6",
     "chalk": "^4.1.0",
     "commander": "^7.0.0",
     "compare-versions": "^3.6.0",
@@ -23,7 +28,7 @@
     "yaml": "^1.10.0"
   },
   "devDependencies": {
-    "@local-api-gateway/types": "^0.1.0",
+    "@local-api-gateway/types": "^0.1.0-6",
     "@raing3/eslint-config": "^0.2.2",
     "@types/node": "^14.14.21",
     "@typescript-eslint/eslint-plugin": "^4.13.0",

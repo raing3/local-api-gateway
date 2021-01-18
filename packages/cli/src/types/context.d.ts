@@ -1,5 +1,5 @@
 import { Config, DockerComposeIntegrationConfig, DockerIntegrationConfig } from '@local-api-gateway/types';
-import { Dictionary, IntegrationConfig } from '@local-api-gateway/types/src';
+import { Dictionary, IntegrationConfig } from '@local-api-gateway/types';
 import { DockerCompose } from './docker-compose';
 
 export type IntegrationContextBase = {

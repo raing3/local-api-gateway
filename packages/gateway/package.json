@@ -3,6 +3,11 @@
   "version": "0.1.0-6",
   "description": "Gateway",
   "author": "Richard Ainger <raing3@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/raing3/local-api-gateway.git",
+    "directory": "packages/gateway"
+  },
   "main": "src/server.js",
   "bin": {
     "local-api-gateway": "dist/index.js"
