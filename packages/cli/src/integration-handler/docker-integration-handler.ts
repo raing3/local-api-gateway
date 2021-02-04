@@ -1,5 +1,5 @@
-import {Context, DockerCompose, DockerIntegrationContext, IntegrationHandler} from '../types';
-import path from "path";
+import { Context, DockerCompose, DockerIntegrationContext, IntegrationHandler } from '../types';
+import path from 'path';
 
 export class DockerIntegrationHandler implements IntegrationHandler {
     generateDockerCompose(context: Context, integration: DockerIntegrationContext): DockerCompose {

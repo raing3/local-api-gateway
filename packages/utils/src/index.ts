@@ -16,9 +16,10 @@ export const parseConfig = (configPath: string): Config => {
             cors: {
                 ...parsed?.middleware?.cors
             },
-            'trace-id': {
+            traceId: {
                 header: 'X-Trace-Id',
-                ...parsed?.middleware?.['trace-id']
+                ...parsed?.middleware?.['trace-id'], // deprecated
+                ...parsed?.middleware?.traceId
             },
             ...parsed?.middleware
         },
@@ -26,10 +27,6 @@ export const parseConfig = (configPath: string): Config => {
             ...parsed?.integrations
         }
     } as Config;
-
-    if (typeof config.middleware?.cors?.['access-control-allow-origin'] === 'string') {
-        config.middleware.cors['access-control-allow-origin'] = [config.middleware.cors['access-control-allow-origin']];
-    }
 
     Object.entries(config.integrations).forEach(([integrationName, integration]) => {
         if (!integration.destination) {

@@ -1,16 +1,16 @@
 #!/usr/bin/env node
 import express from 'express';
 import path from 'path';
+import cors from 'cors';
 import { parseConfig } from '@local-api-gateway/utils';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import { cors } from './middleware/cors';
 import { traceId } from './middleware/trace-id';
 
 const config = parseConfig('/local-api-gateway/.local-api-gateway/gateway.config.yml');
 const host = '0.0.0.0';
 const port = 80;
 const app = express();
-const middleware = [traceId(config.middleware['trace-id']), cors(config.middleware.cors)];
+const middleware = [traceId(config.middleware.traceId), cors(config.middleware.cors)];
 
 Object.values(config.middleware).forEach(item => {
     if (item.path) {

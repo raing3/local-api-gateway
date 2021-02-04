@@ -1,4 +1,4 @@
-import {Context, DockerCompose, GatewayIntegrationContext, IntegrationHandler} from '../types';
+import { Context, DockerCompose, GatewayIntegrationContext, IntegrationHandler } from '../types';
 
 export class GatewayIntegrationHandler implements IntegrationHandler {
     generateDockerCompose(context: Context, integration: GatewayIntegrationContext): DockerCompose {

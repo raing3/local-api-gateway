@@ -1,10 +1,4 @@
-import {
-    Context,
-    DockerCompose,
-    DockerComposeIntegrationContext,
-    IntegrationContext,
-    IntegrationHandler
-} from '../types';
+import { Context, DockerCompose, DockerComposeIntegrationContext, IntegrationHandler } from '../types';
 import fs from 'fs';
 import path from 'path';
 import yaml from 'yaml';

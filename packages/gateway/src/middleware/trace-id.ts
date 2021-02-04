@@ -1,6 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express';
 import { randexp } from 'randexp';
-import { TraceIdMiddlewareConfig } from "@local-api-gateway/types";
+import { TraceIdMiddlewareConfig } from '@local-api-gateway/types';
 
 export const traceId = (config: TraceIdMiddlewareConfig): RequestHandler => {
     return (req: Request, res: Response, next: NextFunction): void => {

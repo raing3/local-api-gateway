@@ -18,7 +18,7 @@ export type PathSource = {
 export type VcsSource = {
     type: 'vcs',
     url: string;
-}
+};
 
 export type IntegrationConfigBase = {
     type: string;
@@ -41,14 +41,17 @@ export type IntegrationConfig = IntegrationConfigBase|DockerIntegrationConfig|Do
 
 export type TraceIdMiddlewareConfig = {
     header: string;
-}
+};
 
 export type CorsMiddlewareConfig = {
-    'access-control-allow-origin'?: string[];
-    'access-control-allow-methods'?: string;
-    'access-control-allow-headers'?: string;
-    'access-control-allow-credentials'?: string;
-}
+    origin?: boolean|string|RegExp|(string|RegExp)[];
+    allowedHeaders?: string|string[];
+    exposedHeaders?: string|string[];
+    credentials?: boolean;
+    maxAge?: number;
+    preflightContinue?: boolean;
+    optionsSuccessStatus?: number;
+};
 
 export type Config = {
     name: string;
@@ -58,7 +61,7 @@ export type Config = {
         source?: string;
     },
     middleware: Dictionary<MiddlewareConfig> & {
-        'trace-id': TraceIdMiddlewareConfig;
+        traceId: TraceIdMiddlewareConfig;
         cors: CorsMiddlewareConfig;
     };
     integrations: Dictionary<IntegrationConfig>;

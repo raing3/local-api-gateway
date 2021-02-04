@@ -1,13 +1,16 @@
 #!/usr/bin/env node
 
-/* eslint-disable no-console */
 import program from 'commander';
+import compareVersions from 'compare-versions';
 import { createContext } from './utils/create-context';
 import { initialise } from './initialise';
 import execa from 'execa';
 import chalk from 'chalk';
+import { getVersion } from './utils/get-version';
+import { getDockerComposeVersion } from './utils/get-docker-compose-version';
 
 const context = createContext('local-api-gateway.yml');
+const minDockerComposeVersion = '1.25.5';
 
 const dockerComposePassthrough = async (args: string[]) => {
     try {
@@ -31,6 +34,16 @@ program
     .on('command:*', async () => {
         const command = program.args[0];
         const args = [...program.args];
+        const dockerComposeVersion = await getDockerComposeVersion();
+
+        console.log('Local API gateway version ', chalk.black.bgWhite(getVersion()));
+        console.log('Docker compose version ', chalk.black.bgWhite(dockerComposeVersion || 'unknown'));
+
+        if (!dockerComposeVersion || compareVersions(dockerComposeVersion, minDockerComposeVersion) < 0) {
+            console.log(chalk.bgRed(
+                `This tool requires docker-compose ${minDockerComposeVersion} or higher to be installed.`
+            ));
+        }
 
         if (command === 'up') {
             await initialise(context);

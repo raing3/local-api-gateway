@@ -1,9 +1,9 @@
-import execa from "execa";
-import {Context} from "../types";
+import execa from 'execa';
+import { Context } from '../types';
 import fs from 'fs';
-import chalk from "chalk";
+import chalk from 'chalk';
 
-export const checkoutIntegrations = async (context: Context) => {
+export const checkoutIntegrations = async (context: Context): Promise<void> => {
     for (const integrationName in context.integrations) {
         const integration = context.integrations[integrationName];
 
@@ -27,15 +27,13 @@ export const checkoutIntegrations = async (context: Context) => {
             { stdio: 'inherit', cwd: integration.destination }
         );
 
-        if (integration.config.build) {
-            console.log('Building:', chalk.black.bgWhite(integration.config.source.url));
+        console.log('Building:', chalk.black.bgWhite(integration.config.source.url));
 
-            for (const index in integration.config.build) {
-                const command = integration.config.build[index];
+        for (const index in integration.config.build) {
+            const command = integration.config.build[index];
 
-                console.log('Executing:', chalk.black.bgWhite(command));
-                await execa(command, { shell: true, stdio: 'inherit', cwd: integration.destination });
-            }
+            console.log('Executing:', chalk.black.bgWhite(command));
+            await execa(command, { shell: true, stdio: 'inherit', cwd: integration.destination });
         }
     }
 };

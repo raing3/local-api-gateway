@@ -5,8 +5,6 @@ To do:
  * Github workflow for CI and publish.
  * Better example.
  * More error handling + validation of config file.
- * Install gateway version that matches the CLI version.
- * CORS middleware.
 
 Maybe:
 
