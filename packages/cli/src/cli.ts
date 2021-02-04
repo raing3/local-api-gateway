@@ -45,7 +45,7 @@ program
             ));
         }
 
-        if (command === 'up') {
+        if (['up', 'build'].includes(command)) {
             await initialise(context);
             args.unshift(`-f ${context.files.dockerCompose}`);
         }
