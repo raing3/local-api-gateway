@@ -1,6 +1,6 @@
 {
   "name": "@local-api-gateway/cli",
-  "version": "0.1.0-12",
+  "version": "0.1.0-13",
   "description": "CLI",
   "author": "Richard Ainger <raing3@gmail.com>",
   "license": "MIT",
@@ -21,7 +21,7 @@
     "local-api-gateway": "dist/cli.js"
   },
   "dependencies": {
-    "@local-api-gateway/utils": "^0.1.0-12",
+    "@local-api-gateway/utils": "^0.1.0-13",
     "chalk": "^4.1.0",
     "commander": "^7.0.0",
     "compare-versions": "^3.6.0",
@@ -29,7 +29,7 @@
     "yaml": "^1.10.0"
   },
   "devDependencies": {
-    "@local-api-gateway/types": "^0.1.0-12",
+    "@local-api-gateway/types": "^0.1.0-13",
     "@raing3/eslint-config": "^0.2.2",
     "@types/node": "^14.14.21",
     "@typescript-eslint/eslint-plugin": "^4.13.0",
