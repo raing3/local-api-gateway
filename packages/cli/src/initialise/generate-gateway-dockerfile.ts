@@ -3,7 +3,7 @@ import { getVersion } from '../utils/get-version';
 
 export const generateGatewayDockerfile = (context: Context): string => {
     return [
-        'FROM node:14',
+        'FROM node:14-alpine',
         'EXPOSE 80',
         'WORKDIR /app',
         // install the gateway if we haven't provided a path to it

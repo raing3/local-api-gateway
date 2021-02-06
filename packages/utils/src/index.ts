@@ -3,13 +3,16 @@ import fs from 'fs';
 import { Config } from '@local-api-gateway/types';
 
 export const parseConfig = (configPath: string): Config => {
+    if (!fs.existsSync(configPath)) {
+        throw new Error(`Configuration file "${configPath}" does not exist.`);
+    }
+
     const parsed = parse(fs.readFileSync(configPath, 'utf8'));
-    const config = {
+    const config: Config = {
         ...parsed,
         gateway: {
             host: 'localhost',
             port: 80,
-            traceIdHeaderName: 'Trace-Id',
             ...parsed?.gateway
         },
         middleware: {
@@ -18,7 +21,6 @@ export const parseConfig = (configPath: string): Config => {
             },
             traceId: {
                 header: 'X-Trace-Id',
-                ...parsed?.middleware?.['trace-id'], // deprecated
                 ...parsed?.middleware?.traceId
             },
             ...parsed?.middleware
@@ -26,9 +28,13 @@ export const parseConfig = (configPath: string): Config => {
         integrations: {
             ...parsed?.integrations
         }
-    } as Config;
+    };
 
     Object.entries(config.integrations).forEach(([integrationName, integration]) => {
+        if (integration.source.type === 'path') {
+            integration.destination = integration.source.url;
+        }
+
         if (!integration.destination) {
             integration.destination = `./${integrationName}`;
         }

@@ -1,0 +1,37 @@
+name: example-local-api-gateway
+
+gateway:
+  host: 127.0.0.1
+  port: 8082
+
+middleware:
+  cors:
+    origin: true
+
+integrations:
+  dockerCompose:
+    type: docker-compose
+    source:
+      type: path
+      url: ./docker-compose-example
+    routes:
+      - service: container1
+        port: 80
+        paths:
+          - "/example"
+          - "/example/*"
+      - service: container2
+        port: 80
+        paths:
+          - "/example2"
+          - "/example2/*"
+  docker:
+    type: docker
+    source:
+      type: path
+      url: ./docker-example
+    routes:
+      - port: 80
+        paths:
+          - "/example3"
+          - "/example3/*"

@@ -1,0 +1,13 @@
+{
+  "name": "@local-api-gateway/docker-compose-example",
+  "version": "0.1.0",
+  "description": "Demo docker compose integration",
+  "author": "Richard Ainger <raing3@gmail.com>",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

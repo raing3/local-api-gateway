@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+  container1:
+    image: node:14-alpine
+    ports:
+      - 80:80
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+    working_dir: /app
+    entrypoint:
+      - npm
+      - run
+      - start
+    environment:
+      - SERVICE_NAME=container1
+  container2:
+    image: node:14-alpine
+    ports:
+      - 81:80
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+    working_dir: /app
+    entrypoint:
+      - npm
+      - run
+      - start
+    environment:
+      - SERVICE_NAME=container2

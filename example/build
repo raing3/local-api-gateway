@@ -1,0 +1,4 @@
+#!/bin/sh
+
+cd docker-compose-example && npm install && cd -
+cd docker-example && npm install && cd -

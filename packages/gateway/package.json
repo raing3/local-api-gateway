@@ -3,6 +3,7 @@
   "version": "0.1.0-12",
   "description": "Gateway",
   "author": "Richard Ainger <raing3@gmail.com>",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/raing3/local-api-gateway.git",
