@@ -35,6 +35,7 @@ program
         const command = program.args[0];
         const args = [...program.args];
         const dockerComposeVersion = await getDockerComposeVersion();
+        const noBuildConfigIndex = args.indexOf('--no-build-config');
 
         console.log('Local API gateway version ', chalk.black.bgWhite(getVersion()));
         console.log('Docker compose version ', chalk.black.bgWhite(dockerComposeVersion || 'unknown'));
@@ -46,7 +47,13 @@ program
         }
 
         if (['up', 'build'].includes(command)) {
-            await initialise(context);
+            if (noBuildConfigIndex >= 0) {
+                args.splice(noBuildConfigIndex, 1);
+                console.log(chalk.black.bgYellow('Skipping rebuild of configuration.'));
+            } else {
+                await initialise(context);
+            }
+
             args.unshift(`-f ${context.files.dockerCompose}`);
         }
 

@@ -11,7 +11,8 @@ export class GatewayIntegrationHandler implements IntegrationHandler {
                         dockerfile: context.files.gatewayDockerfile
                     },
                     ports: [`${context.config.gateway.host}:${context.config.gateway.port}:80`],
-                    volumes: [{ type: 'bind', source: process.cwd(), target: '/local-api-gateway' }]
+                    volumes: [{ type: 'bind', source: process.cwd(), target: '/local-api-gateway' }],
+                    restart: 'always'
                 }
             }
         };

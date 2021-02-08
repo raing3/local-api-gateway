@@ -11,11 +11,11 @@ export const generateGatewayConfig = (context: Context): Config => {
         const integrationConfig = config.integrations[integrationName];
 
         integrationConfig.routes.forEach(route => {
-            route.service = route.service
+            route.service = route.service ?
                 // service name specified, resolve it to what it has been renamed to
-                ? resolveNewServiceName(context.integrations[integrationName], route.service)
+                resolveNewServiceName(context.integrations[integrationName], route.service) :
                 // no service name specified, just resolve it to the first service
-                : Object.keys(integration.services)[0];
+                Object.keys(integration.services)[0];
         });
     });
 

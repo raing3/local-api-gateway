@@ -35,7 +35,7 @@ local-api-gateway build
 
 ## Usage
 ### Command line
-`local-api-gateway [options] [command]`
+`local-api-gateway [command] [options]`
 
 The CLI tool acts as a proxy to the `docker-compose` CLI. Any command and arguments supported by `docker-compose` can be used:
 https://docs.docker.com/compose/reference/overview/
@@ -47,9 +47,15 @@ The tool should be executed in a directory which contains a `local-api-gateway.y
 `$ local-api-gateway up`
  * Checks out and builds the integrations specified in `local-api-gateway.yml` then runs `docker-compose up`.
 
+Options:
+ * `--no-build-config` - Skip rebuilding the files in the `.local-api-gateway` folder.
+
 ##### build
 `$ local-api-gateway build`
  * Checks out and builds the integrations specified in `local-api-gateway.yml` then runs `docker-compose build`.
+
+Options:
+ * `--no-build-config` - Skip rebuilding the files in the `.local-api-gateway` folder.
 
 ##### ssh
 `$ local-api-gateway ssh [integration name]`

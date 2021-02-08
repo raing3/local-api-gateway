@@ -15,6 +15,8 @@ services:
       - start
     environment:
       - SERVICE_NAME=container1
+    networks:
+      - network1
   container2:
     image: node:14-alpine
     ports:
@@ -30,3 +32,46 @@ services:
       - start
     environment:
       - SERVICE_NAME=container2
+    networks:
+      network2:
+        aliases:
+          - container2alias
+  networked_container1:
+    image: node:14-alpine
+    ports: 82:80
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+    working_dir: /app
+    entrypoint:
+      - npm
+      - run
+      - start
+    environment:
+      - SERVICE_NAME=networked_container1
+      - PROXY_TO=container1
+    networks:
+      - network1
+  networked_container2:
+    image: node:14-alpine
+    ports: 82:80
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+    working_dir: /app
+    entrypoint:
+      - npm
+      - run
+      - start
+    environment:
+      - SERVICE_NAME=networked_container2
+      - PROXY_TO=container2alias
+    networks:
+      - network2
+networks:
+  network1:
+    driver: bridge
+  network2:
+    driver: bridge

@@ -7,6 +7,8 @@ gateway:
 middleware:
   cors:
     origin: true
+  dieOnAccessDieRoute:
+    path: ./middleware/die-on-access-die-route.js
 
 integrations:
   dockerCompose:
@@ -25,6 +27,16 @@ integrations:
         paths:
           - "/example2"
           - "/example2/*"
+      - service: networked_container1
+        port: 80
+        paths:
+          - "/example3"
+          - "/example3/*"
+      - service: networked_container2
+        port: 80
+        paths:
+          - "/example4"
+          - "/example4/*"
   docker:
     type: docker
     source:
@@ -33,5 +45,5 @@ integrations:
     routes:
       - port: 80
         paths:
-          - "/example3"
-          - "/example3/*"
+          - "/example5"
+          - "/example5/*"
