@@ -1,6 +1,6 @@
 {
   "name": "@local-api-gateway/types",
-  "version": "0.1.0-13",
+  "version": "0.2.0",
   "description": "Types",
   "author": "Richard Ainger <raing3@gmail.com>",
   "license": "MIT",
