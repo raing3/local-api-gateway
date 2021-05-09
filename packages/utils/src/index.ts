@@ -1,6 +1,7 @@
 import { parse } from 'yaml';
 import fs from 'fs';
 import { Config } from '@local-api-gateway/types';
+import { DeepPartial } from './types';
 
 export const parseConfig = (configPath: string): Config => {
     if (!fs.existsSync(configPath)) {
@@ -8,7 +9,7 @@ export const parseConfig = (configPath: string): Config => {
     }
 
     const parsed = parse(fs.readFileSync(configPath, 'utf8'));
-    const config: Config = {
+    const config: DeepPartial<Config> = {
         ...parsed,
         gateway: {
             host: 'localhost',
@@ -30,21 +31,25 @@ export const parseConfig = (configPath: string): Config => {
         }
     };
 
-    Object.entries(config.integrations).forEach(([integrationName, integration]) => {
-        if (integration.source.type === 'path') {
-            integration.destination = integration.source.url;
-        }
+    if (config.integrations) {
+        Object.entries(config.integrations).forEach(([integrationName, integration]) => {
+            integration = integration || {};
 
-        if (!integration.destination) {
-            integration.destination = `./${integrationName}`;
-        }
+            if (integration.source?.type === 'path') {
+                integration.destination = integration.source.url;
+            }
 
-        if (typeof integration.build === 'string') {
-            integration.build = [integration.build];
-        }
-    });
+            if (!integration.destination) {
+                integration.destination = `./${integrationName}`;
+            }
 
-    return config;
+            if (typeof integration.build === 'string') {
+                integration.build = [integration.build];
+            }
+        });
+    }
+
+    return config as Config;
 };
 
 export const clone = <T>(value: T): T => {

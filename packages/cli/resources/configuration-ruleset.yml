@@ -1,0 +1,29 @@
+functions: [fileExists]
+
+rules:
+  schema:
+    severity: error
+    type: validation
+    given: $
+    then:
+      function: schema
+      functionOptions:
+        allErrors: true
+        schema:
+          $ref: "./configuration-schema.yml"
+
+  alphabetically-sorted-integrations:
+    message: Integrations should be sorted alphabetically, {{error}}.
+    severity: warn
+    type: style
+    given: $.integrations
+    then:
+      function: alphabetical
+
+  middleware-exists:
+    message: Configured middleware files should exist, {{error}}.
+    severity: error
+    type: validation
+    given: $.middleware.*.path
+    then:
+      function: fileExists

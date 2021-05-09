@@ -11,6 +11,16 @@ middleware:
     path: ./middleware/die-on-access-die-route.js
 
 integrations:
+  docker:
+    type: docker
+    source:
+      type: path
+      url: ./docker-example
+    routes:
+      - port: 80
+        paths:
+          - "/example5"
+          - "/example5/*"
   dockerCompose:
     type: docker-compose
     source:
@@ -37,13 +47,3 @@ integrations:
         paths:
           - "/example4"
           - "/example4/*"
-  docker:
-    type: docker
-    source:
-      type: path
-      url: ./docker-example
-    routes:
-      - port: 80
-        paths:
-          - "/example5"
-          - "/example5/*"

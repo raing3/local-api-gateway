@@ -61,6 +61,12 @@ Options:
 `$ local-api-gateway ssh [integration name]`
  * SSH into the integration specified.
 
+##### lint
+`$ local-api-gateway lint`
+ * Uses [Spectral](https://github.com/stoplightio/spectral) to validate the `local-api-gateway.yml` conforms to
+   the configured linting rules.
+
+
 ## Configuration file format
 
 ```
