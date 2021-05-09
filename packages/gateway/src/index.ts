@@ -24,15 +24,17 @@ middleware.forEach(item => {
 });
 
 Object.values(config.integrations).forEach(integration => {
-    integration.routes.forEach(route => {
-        const proxy = createProxyMiddleware({
-            target: `http://${route.service}:${route.port}`,
-            changeOrigin: false,
-            logLevel: 'debug'
-        });
+    Object.values(integration.services).forEach(service => {
+        service.routes.forEach(route => {
+            const proxy = createProxyMiddleware({
+                target: `http://${service.name}:${route.port}`,
+                changeOrigin: false,
+                logLevel: 'debug'
+            });
 
-        route.paths.forEach(routePath => {
-            app.use(routePath, proxy);
+            route.paths.forEach(routePath => {
+                app.use(routePath, proxy);
+            });
         });
     });
 });

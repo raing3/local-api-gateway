@@ -12,6 +12,7 @@ import compareVersions from 'compare-versions';
 import { clone } from '@local-api-gateway/utils';
 import { resolveNewNetworkName } from '../utils/resolve-new-network-name';
 import { resolveNewServiceName } from '../utils/resolve-new-service-name';
+import { resolveOriginalServiceName } from '../utils/resolve-original-service-name';
 
 const resolvePaths = (dockerCompose: DockerCompose, integration: IntegrationContext, buildPath: string) => {
     const resolvePath = (...pathSegments: string[]): string => {
@@ -31,7 +32,9 @@ const resolvePaths = (dockerCompose: DockerCompose, integration: IntegrationCont
 
         if (service.volumes) {
             Object.values(service.volumes).forEach(volume => {
-                volume.source = resolvePath(volume.source);
+                if (typeof volume === 'object') {
+                    volume.source = resolvePath(volume.source);
+                }
             });
         }
     });
@@ -52,12 +55,6 @@ const mergeDockerComposes = (context: Context): DockerCompose => {
             merged.version = dockerCompose.version;
         }
 
-        if (integration.type !== 'gateway') {
-            Object.values(dockerCompose.services).forEach(service => {
-                delete service.ports;
-            });
-        }
-
         merged.services = {
             ...merged.services,
             ...dockerCompose.services
@@ -72,21 +69,27 @@ const mergeDockerComposes = (context: Context): DockerCompose => {
     return merged;
 };
 
+const deletePorts = (context: Context) => {
+    Object.values(context.integrations).forEach(integration => {
+        if (integration.type !== 'gateway') {
+            Object.values(integration.dockerCompose!.services).forEach(service => {
+                delete service.ports;
+            });
+        }
+    });
+};
+
 const renameServices = (context: Context) => {
     Object.values(context.integrations).forEach(integration => {
         const dockerCompose = integration.dockerCompose!;
         const serviceNames = Object.keys(dockerCompose.services);
 
         serviceNames.forEach(originalServiceName => {
-            // generate new name for service, use integration name as preference, avoid collisions
-            const serviceName = serviceNames.length === 1 ?
-                integration.name :
-                `${integration.name}.${originalServiceName}`;
+            if (!('config' in integration)) {
+                return;
+            }
 
-            // track the old and new service name
-            integration.services[serviceName] = {
-                originalServiceName: originalServiceName
-            };
+            const serviceName = resolveNewServiceName(integration, originalServiceName);
 
             // re-add the service under its new name
             if (serviceName !== originalServiceName) {
@@ -107,13 +110,7 @@ const renameNetworks = (context: Context) => {
         const networkNames = Object.keys(dockerCompose.networks!);
 
         networkNames.forEach(originalNetworkName => {
-            // generate new name for service, use integration name as preference, avoid collisions
-            const networkName = `${integration.name}.${originalNetworkName}`;
-
-            // track the old and new service name
-            integration.networks[networkName] = {
-                originalNetworkName: originalNetworkName
-            };
+            const networkName = resolveNewNetworkName(integration, originalNetworkName);
 
             // re-add the network under its new name
             dockerCompose.networks![networkName] = dockerCompose.networks![originalNetworkName];
@@ -153,7 +150,7 @@ const fixNetworkNamesAndAliases = (context: Context) => {
                 // change to new network name and add alias for original service name
                 service.networks.forEach(network => {
                     networks[resolveNewNetworkName(integration, network)] = {
-                        aliases: [integration.services[serviceName].originalServiceName]
+                        aliases: [resolveOriginalServiceName(integration, serviceName)]
                     };
                 });
             } else if (service.networks) {
@@ -163,7 +160,7 @@ const fixNetworkNamesAndAliases = (context: Context) => {
                     networks[resolveNewNetworkName(integration, originalNetworkName)] = {
                         ...options,
                         aliases: [
-                            integration.services[serviceName].originalServiceName,
+                            resolveOriginalServiceName(integration, serviceName),
                             ...options.aliases || []
                         ]
                     };
@@ -205,7 +202,7 @@ const createDefaultNetworks = (context: Context) => {
             Object.entries(servicesMissingNetworks).forEach(([serviceName, service]) => {
                 service.networks = {
                     [defaultNetworkName]: {
-                        aliases: [integration.services[serviceName].originalServiceName]
+                        aliases: [resolveOriginalServiceName(integration, serviceName)]
                     }
                 };
             });
@@ -221,13 +218,10 @@ const createGatewayNetworks = (context: Context) => {
         const servicesInGatewayNetwork: Set<string> = new Set([]);
 
         if ('config' in integration) {
-            integration.config.routes.forEach(route => {
-                servicesInGatewayNetwork.add(
-                    // if no service name is specified it is pointing to the first service in docker-compose.yml.
-                    route.service ?
-                        resolveNewServiceName(integration, route.service) :
-                        Object.keys(integration.services)[0]
-                );
+            Object.values(integration.config.services).forEach(service => {
+                if (service.routes.length > 0) {
+                    servicesInGatewayNetwork.add(service.name);
+                }
             });
         }
 
@@ -285,7 +279,7 @@ const createGatewayNetworks = (context: Context) => {
             Object.entries(servicesMissingNetworks).forEach(([serviceName, service]) => {
                 service.networks = {
                     [defaultNetworkName]: {
-                        aliases: [integration.services[serviceName].originalServiceName]
+                        aliases: [resolveOriginalServiceName(integration, serviceName)]
                     }
                 };
             });
@@ -307,6 +301,89 @@ const fixDependsOn = (context: Context) => {
     });
 };
 
+const injectIntegrationConfiguration = (context: Context, dockerCompose: DockerCompose): DockerCompose => {
+    Object.values(context.integrations).forEach(integration => {
+        if ('config' in integration) {
+            Object.values(integration.config.services).forEach(service => {
+                if (service.ports.length > 0) {
+                    dockerCompose.services[service.name].ports = [
+                        ...integration.dockerCompose!.services[service.name].ports || [],
+                        ...service.ports
+                    ];
+                }
+
+                if (service.networks.length > 0) {
+                    const networks = dockerCompose.services[service.name].networks || {};
+
+                    service.networks.forEach(originalNetworkName => {
+                        const networkName = `${context.config.name}.${originalNetworkName}`;
+
+                        if (networks instanceof Array) {
+                            throw new Error(`Cannot configure networks on service "${service.name}".`);
+                        }
+
+                        networks[networkName] = {};
+                    });
+
+                    dockerCompose.services[service.name].networks = networks;
+                }
+            });
+        }
+    });
+
+    Object.entries(context.config.networks).forEach(([networkName, network]) => {
+        networkName = `${context.config.name}.${networkName}`;
+
+        dockerCompose.networks![networkName] = network;
+    });
+
+    Object.values(dockerCompose.services).forEach(service => {
+        service.extra_hosts = [
+            ...service.extra_hosts || [],
+            ...context.config.extraHosts
+        ];
+    });
+
+    return dockerCompose;
+};
+
+const populateConfig = (context: Context) => {
+    Object.entries(context.integrations).forEach(([integrationName, integration]) => {
+        if (!('config' in integration)) {
+            return;
+        }
+
+        const numServices = Object.keys(integration.dockerCompose!.services).length;
+
+        // add services which are only defined in docker-compose.yml.
+        // rename "_default" service to its actual name.
+        Object.keys(integration.dockerCompose!.services).forEach(serviceName => {
+            if (integration.config.services._default) { // eslint-disable-line
+                integration.config.services[serviceName] = integration.config.services._default;
+                delete integration.config.services._default;
+            } else if (!integration.config.services[serviceName]) { // eslint-disable-line
+                integration.config.services[serviceName] = {
+                    name: serviceName,
+                    ports: [],
+                    networks: [],
+                    routes: []
+                };
+            }
+
+            integration.config.services[serviceName].name = numServices === 1 ?
+                integrationName :
+                `${integrationName}.${serviceName}`;
+        });
+
+        // make sure all configured services exist.
+        Object.keys(integration.config.services).forEach(serviceName => {
+            if (!integration.dockerCompose!.services[serviceName]) { // eslint-disable-line
+                throw new Error(`Service "${serviceName}" does not exist in integration "${integrationName}".`);
+            }
+        });
+    });
+};
+
 const populateInitialDockerCompose = (context: Context) => {
     Object.values(context.integrations).forEach(integration => {
         integration.dockerCompose = getIntegrationHandler(integration).generateDockerCompose(context, integration);
@@ -317,6 +394,8 @@ const populateInitialDockerCompose = (context: Context) => {
 
 export const generateDockerCompose = (context: Context): DockerCompose => {
     populateInitialDockerCompose(context);
+    populateConfig(context);
+    deletePorts(context);
     renameServices(context);
     renameNetworks(context);
     fixLinks(context);
@@ -325,5 +404,5 @@ export const generateDockerCompose = (context: Context): DockerCompose => {
     createGatewayNetworks(context);
     fixDependsOn(context);
 
-    return mergeDockerComposes(context);
+    return injectIntegrationConfiguration(context, mergeDockerComposes(context));
 };

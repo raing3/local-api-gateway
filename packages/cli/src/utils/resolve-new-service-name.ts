@@ -1,9 +1,9 @@
 import { IntegrationContext } from '../types';
 
 export const resolveNewServiceName = (integration: IntegrationContext, originalServiceName: string): string => {
-    const result = Object.entries(integration.services).find((entry) => {
-        return entry[1].originalServiceName === originalServiceName;
-    });
+    const result = 'config' in integration ?
+        integration.config.services[originalServiceName].name :
+        null;
 
     if (!result) {
         throw new Error(
@@ -11,5 +11,5 @@ export const resolveNewServiceName = (integration: IntegrationContext, originalS
         );
     }
 
-    return result[0];
+    return result;
 };

@@ -5,7 +5,6 @@ export type MiddlewareConfig = {
 };
 
 export type RouteConfig = {
-    service?: string;
     port: number;
     paths: string[];
 };
@@ -20,13 +19,20 @@ export type VcsSource = {
     url: string;
 };
 
+export type IntegrationServiceConfig = {
+    name: string;
+    ports: string[];
+    networks: string[];
+    routes: RouteConfig[];
+};
+
 export type IntegrationConfigBase = {
     type: string;
     source: PathSource|VcsSource;
     build: string[];
     destination: string;
     context?: string;
-    routes: RouteConfig[];
+    services: Dictionary<IntegrationServiceConfig>;
 };
 
 export type DockerIntegrationConfig = IntegrationConfigBase & {
@@ -38,6 +44,10 @@ export type DockerComposeIntegrationConfig = IntegrationConfigBase & {
 };
 
 export type IntegrationConfig = IntegrationConfigBase|DockerIntegrationConfig|DockerComposeIntegrationConfig;
+
+export type NetworkConfig = {
+    driver: string;
+};
 
 export type TraceIdMiddlewareConfig = {
     header: string;
@@ -65,4 +75,6 @@ export type Config = {
         cors: CorsMiddlewareConfig;
     };
     integrations: Dictionary<IntegrationConfig>;
+    networks: Dictionary<NetworkConfig>;
+    extraHosts: string[];
 };

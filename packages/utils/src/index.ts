@@ -1,7 +1,7 @@
 import { parse } from 'yaml';
 import fs from 'fs';
 import { Config } from '@local-api-gateway/types';
-import { DeepPartial } from './types';
+import { Dictionary } from '@local-api-gateway/types/src';
 
 export const parseConfig = (configPath: string): Config => {
     if (!fs.existsSync(configPath)) {
@@ -9,7 +9,7 @@ export const parseConfig = (configPath: string): Config => {
     }
 
     const parsed = parse(fs.readFileSync(configPath, 'utf8'));
-    const config: DeepPartial<Config> = {
+    const config: Config = {
         ...parsed,
         gateway: {
             host: 'localhost',
@@ -26,13 +26,15 @@ export const parseConfig = (configPath: string): Config => {
             },
             ...parsed?.middleware
         },
-        integrations: {
-            ...parsed?.integrations
-        }
+        integrations: {},
+        networks: {
+            ...parsed?.networks || []
+        },
+        extraHosts: [...parsed?.extraHosts || []]
     };
 
-    if (config.integrations) {
-        Object.entries(config.integrations).forEach(([integrationName, integration]) => {
+    if (parsed?.integrations) {
+        Object.entries(parsed.integrations as Dictionary<any>).forEach(([integrationName, integration]) => {
             integration = integration || {};
 
             if (integration.source?.type === 'path') {
@@ -46,6 +48,30 @@ export const parseConfig = (configPath: string): Config => {
             if (typeof integration.build === 'string') {
                 integration.build = [integration.build];
             }
+
+            if (integration.routes || integration.ports || integration.networks) {
+                integration.services = {
+                    _default: { // eslint-disable-line
+                        routes: integration.routes,
+                        ports: integration.ports,
+                        networks: integration.networks
+                    }
+                };
+
+                delete integration.routes;
+                delete integration.ports;
+                delete integration.networks;
+            } else if (!integration.services) {
+                integration.services = {};
+            }
+
+            Object.values(integration.services as Dictionary<any>).forEach(service => {
+                service.routes = service.routes || [];
+                service.ports = service.ports || [];
+                service.networks = service.networks || [];
+            });
+
+            config.integrations[integrationName] = integration;
         });
     }
 

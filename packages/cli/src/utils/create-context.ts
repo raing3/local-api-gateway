@@ -13,9 +13,7 @@ export const createContext = (configPath: string): Context => {
         gateway: {
             name: 'gateway',
             type: 'gateway',
-            destination: process.cwd(),
-            services: {},
-            networks: {}
+            destination: process.cwd()
         },
         integrations: {},
         directories: {
@@ -38,8 +36,6 @@ export const createContext = (configPath: string): Context => {
             name: integrationName,
             type: integrationConfig.type as string,
             destination: path.resolve(integrationConfig.destination),
-            services: {},
-            networks: {},
             config: integrationConfig
         };
     });

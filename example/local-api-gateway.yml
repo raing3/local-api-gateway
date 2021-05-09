@@ -3,6 +3,7 @@ name: example-local-api-gateway
 gateway:
   host: 127.0.0.1
   port: 8082
+  source: ../packages/gateway
 
 middleware:
   cors:
@@ -19,31 +20,53 @@ integrations:
     routes:
       - port: 80
         paths:
-          - "/example5"
-          - "/example5/*"
+          - "/example"
+          - "/example/*"
+    networks:
+      - shared
   dockerCompose:
     type: docker-compose
     source:
       type: path
       url: ./docker-compose-example
-    routes:
-      - service: container1
-        port: 80
-        paths:
-          - "/example"
-          - "/example/*"
-      - service: container2
-        port: 80
-        paths:
-          - "/example2"
-          - "/example2/*"
-      - service: networked_container1
-        port: 80
-        paths:
-          - "/example3"
-          - "/example3/*"
-      - service: networked_container2
-        port: 80
-        paths:
-          - "/example4"
-          - "/example4/*"
+    services:
+      container1:
+        routes:
+          - port: 80
+            paths:
+              - "/example2"
+              - "/example2/*"
+      container2:
+        routes:
+          - port: 80
+            paths:
+              - "/example3"
+              - "/example3/*"
+      networked_container1:
+        routes:
+          - port: 80
+            paths:
+              - "/example4"
+              - "/example4/*"
+      networked_container2:
+        routes:
+          - port: 80
+            paths:
+              - "/example5"
+              - "/example5/*"
+      cross_integration_networked_container1:
+        routes:
+          - port: 80
+            paths:
+              - "/example6"
+              - "/example6/*"
+        networks:
+          - shared
+        ports:
+          - 8083:80
+networks:
+  shared:
+    driver: bridge
+
+extraHosts:
+  - "google.com:127.0.0.1"

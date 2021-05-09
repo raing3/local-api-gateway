@@ -11,4 +11,6 @@ Finally, navigate to one of the following URLs to see the gateway routing in act
  * http://localhost:8082/example3
  * http://localhost:8082/example4
  * http://localhost:8082/example5
+ * http://localhost:8082/example6
  * http://localhost:8082/die
+ * http://localhost:8083
