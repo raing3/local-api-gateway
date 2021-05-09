@@ -5,9 +5,12 @@ import compareVersions from 'compare-versions';
 import { createContext } from './utils/create-context';
 import { initialise } from './initialise';
 import execa from 'execa';
+import fs from 'fs';
 import chalk from 'chalk';
 import { getVersion } from './utils/get-version';
 import { getDockerComposeVersion } from './utils/get-docker-compose-version';
+import { formatLintResults, lint } from './linter/lint';
+import path from 'path';
 
 const context = createContext('local-api-gateway.yml');
 const minDockerComposeVersion = '1.25.5';
@@ -22,6 +25,27 @@ const dockerComposePassthrough = async (args: string[]) => {
         console.log(error.message);
     }
 };
+
+program
+    .command('lint')
+    .action(async () => {
+        try {
+            const rulesetPath = path.join(process.cwd(), '/local-api-gateway.lint.yml');
+            const results = await lint({
+                configurationPath: path.join(process.cwd(), '/local-api-gateway.yml'),
+                rulesetPath: fs.existsSync(rulesetPath) ? rulesetPath : undefined
+            });
+
+            if (results.length > 0) {
+                console.log(formatLintResults(results));
+                process.exit(1); // eslint-disable-line no-process-exit
+            } else {
+                console.log('No linting issues were found!');
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
+    });
 
 program
     .command('ssh [service]')

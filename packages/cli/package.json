@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@local-api-gateway/utils": "^0.2.0",
+    "@stoplight/spectral": "^5.9.1",
     "chalk": "^4.1.0",
     "commander": "^7.0.0",
     "compare-versions": "^3.6.0",

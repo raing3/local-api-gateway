@@ -1,0 +1,155 @@
+definitions:
+  Gateway:
+    type: object
+    properties:
+      host:
+        type: string
+        format: ipv4
+      port:
+        type: integer
+  Middleware:
+    Cors:
+      type: object
+      additionalProperties: false
+      properties:
+        origin:
+          type: [array, boolean, string]
+          minItems: 1
+          items:
+            type: string
+        methods:
+          type: array
+          items:
+            type: string
+        allowedHeaders:
+          type: [array, string]
+          minItems: 1
+          items:
+            type: string
+        exposedHeaders:
+          type: [array, string]
+          minItems: 1
+          items:
+            type: string
+        credentials:
+          type: boolean
+        maxAge:
+          type: integer
+        preflightContinue:
+          type: boolean
+        optionsSuccessStatus:
+          type: integer
+    TraceId:
+      type: object
+      additionalProperties: false
+      properties:
+        header:
+          type: string
+    Custom:
+      type: object
+      additionalProperties: false
+      required: [path]
+      properties:
+        path:
+          type: string
+  Integrations:
+    PathSource:
+      type: object
+      required: [type, url]
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+          enum: [path]
+        url:
+          type: string
+    VcsSource:
+      type: object
+      required: [type, url]
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+          enum: [vcs]
+        url:
+          type: string
+    Source:
+      oneOf:
+        - $ref: "#/definitions/Integrations/PathSource"
+        - $ref: "#/definitions/Integrations/VcsSource"
+    Route:
+      type: object
+      required: [port, paths]
+      additionalProperties: false
+      properties:
+        service:
+          type: string
+        port:
+          type: integer
+        paths:
+          type: array
+          minItems: 1
+          items:
+            type: string
+    Routes:
+      type: array
+      items:
+        $ref: "#/definitions/Integrations/Route"
+    IntegrationCommon:
+      type: object
+      required: [type, source]
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+        source:
+          $ref: "#/definitions/Integrations/Source"
+        destination:
+          type: string
+        routes:
+          $ref: "#/definitions/Integrations/Routes"
+        build:
+          type: [array, string]
+          minItems: 1
+          items:
+            type: string
+        context:
+          type: string
+    DockerIntegration:
+      allOf:
+        - $ref: "#/definitions/Integrations/IntegrationCommon"
+        - properties:
+            type:
+              type: string
+              enum: [docker]
+    DockerComposeIntegration:
+      allOf:
+        - $ref: "#/definitions/Integrations/IntegrationCommon"
+        - properties:
+            type:
+              type: string
+              enum: [docker-compose]
+    Integration:
+      oneOf:
+        - $ref: "#/definitions/Integrations/DockerIntegration"
+        - $ref: "#/definitions/Integrations/DockerComposeIntegration"
+type: object
+required: [name]
+properties:
+  name:
+    type: string
+  gateway:
+    $ref: "#/definitions/Gateway"
+  middleware:
+    type: object
+    properties:
+      cors:
+        $ref: "#/definitions/Middleware/Cors"
+      traceId:
+        $ref: "#/definitions/Middleware/TraceId"
+    additionalProperties:
+      $ref: "#/definitions/Middleware/Custom"
+  integrations:
+    type: object
+    additionalProperties:
+      $ref: "#/definitions/Integrations/Integration"
