@@ -1,6 +1,6 @@
 {
   "name": "@local-api-gateway/utils",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Utils",
   "author": "Richard Ainger <raing3@gmail.com>",
   "license": "MIT",
@@ -23,7 +23,7 @@
     "yaml": "^1.10.2"
   },
   "devDependencies": {
-    "@local-api-gateway/types": "^0.2.0",
+    "@local-api-gateway/types": "^0.3.0",
     "@raing3/eslint-config": "^0.2.3",
     "@types/node": "^15.0.2",
     "@typescript-eslint/eslint-plugin": "^4.22.1",
