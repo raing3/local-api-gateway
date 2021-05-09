@@ -82,8 +82,6 @@ definitions:
       required: [port, paths]
       additionalProperties: false
       properties:
-        service:
-          type: string
         port:
           type: integer
         paths:
@@ -95,46 +93,81 @@ definitions:
       type: array
       items:
         $ref: "#/definitions/Integrations/Route"
-    IntegrationCommon:
+    Ports:
+      type: array
+      items:
+        type: string
+    Networks:
+      type: array
+      items:
+        type: string
+    Type:
+      type: string
+      enum: [docker, docker-compose]
+    Destination:
+      type: string
+    Build:
+      type: [array, string]
+      minItems: 1
+      items:
+        type: string
+    Context:
+      type: string
+    SingleServiceIntegration:
       type: object
       required: [type, source]
       additionalProperties: false
       properties:
         type:
-          type: string
+          $ref: "#/definitions/Integrations/Type"
         source:
           $ref: "#/definitions/Integrations/Source"
         destination:
-          type: string
+          $ref: "#/definitions/Integrations/Destination"
+        build:
+          $ref: "#/definitions/Integrations/Build"
+        context:
+          $ref: "#/definitions/Integrations/Context"
         routes:
           $ref: "#/definitions/Integrations/Routes"
+        ports:
+          $ref: "#/definitions/Integrations/Ports"
+        networks:
+          $ref: "#/definitions/Integrations/Networks"
+    MultiServiceIntegration:
+      type: object
+      required: [type, source]
+      additionalProperties: false
+      properties:
+        type:
+          $ref: "#/definitions/Integrations/Type"
+        source:
+          $ref: "#/definitions/Integrations/Source"
+        destination:
+          $ref: "#/definitions/Integrations/Destination"
         build:
-          type: [array, string]
-          minItems: 1
-          items:
-            type: string
+          $ref: "#/definitions/Integrations/Build"
         context:
-          type: string
-    DockerIntegration:
-      allOf:
-        - $ref: "#/definitions/Integrations/IntegrationCommon"
-        - properties:
-            type:
-              type: string
-              enum: [docker]
-    DockerComposeIntegration:
-      allOf:
-        - $ref: "#/definitions/Integrations/IntegrationCommon"
-        - properties:
-            type:
-              type: string
-              enum: [docker-compose]
+          $ref: "#/definitions/Integrations/Context"
+        services:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties: false
+            properties:
+              routes:
+                $ref: "#/definitions/Integrations/Routes"
+              ports:
+                $ref: "#/definitions/Integrations/Ports"
+              networks:
+                $ref: "#/definitions/Integrations/Networks"
     Integration:
-      oneOf:
-        - $ref: "#/definitions/Integrations/DockerIntegration"
-        - $ref: "#/definitions/Integrations/DockerComposeIntegration"
+      anyOf:
+        - $ref: "#/definitions/Integrations/SingleServiceIntegration"
+        - $ref: "#/definitions/Integrations/MultiServiceIntegration"
 type: object
 required: [name]
+additionalProperties: false
 properties:
   name:
     type: string
@@ -153,3 +186,16 @@ properties:
     type: object
     additionalProperties:
       $ref: "#/definitions/Integrations/Integration"
+  networks:
+    type: object
+    additionalProperties:
+      type: object
+      additionalProperties: false
+      properties:
+        driver:
+          type: string
+          enum: [bridge, overlay, host, none]
+  extraHosts:
+    type: array
+    items:
+      type: string

@@ -7,7 +7,7 @@ export type DockerComposeServiceBuild = string|{
     args?: Dictionary<any>;
 };
 
-export type DockerComposeServiceVolume = {
+export type DockerComposeServiceVolume = string|{
     type: 'bind',
     source: string;
     target: string;
@@ -30,6 +30,7 @@ export type DockerComposeService = {
     restart?: 'no'|'always'|'on-failure'|'unless-stopped';
     networks?: string[]|Dictionary<DockerComposeServiceNetwork>;
     depends_on?: string[];
+    extra_hosts?: string[];
 };
 
 export type DockerComposeNetwork = {

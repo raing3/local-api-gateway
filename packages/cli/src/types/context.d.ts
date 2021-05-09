@@ -11,12 +11,6 @@ export type IntegrationContextBase = {
     type: string;
     name: string;
     destination: string;
-    services: Dictionary<{
-        originalServiceName: string;
-    }>;
-    networks: Dictionary<{
-        originalNetworkName: string;
-    }>;
     dockerCompose?: DockerCompose;
     config: IntegrationConfig;
 };

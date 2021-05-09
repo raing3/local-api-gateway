@@ -97,13 +97,16 @@ integrations:
     destination: ../example-api # path to checkout source to, relative to the working directory.
     build: "build.sh" # build command to run on initial checkout, executed in destination directory, can be specified as an array of strings for multiple commands.
     context: containers # path to folder containing the docker-compose.yml file, relative to the destination directory.
-    routes:
-     - service: "nginx" # name of the service in the docker-compose.yml to route the traffic to, default: first service.
-       port: 80 # port on the integration container to route traffic to.
-       paths:
-        # array of paths on the gateway to route to this integration.
-        - "/example"
-        - "/example/*"
+    services:
+      nginx: # name of the service in the docker-compose.yml to route the traffic to, default: first service.
+        routes:
+         - port: 80 # port on the integration container to route traffic to.
+           paths:
+            # array of paths on the gateway to route to this integration.
+            - "/example"
+            - "/example/*"
+        networks:
+         - shared
 
   dockerIntegration:
     type: docker # identifies that this is a docker based integration.
@@ -119,6 +122,20 @@ integrations:
         # array of paths on the gateway to route to this integration.
         - "/example2"
         - "/example2/*"
+    networks:
+     - shared
+
+  # you can create networks which are used by multiple integrations.
+  # note that the host name of the service you are accessing will be different than what is defined initially.
+  # for multi-service integrations it will be "integrationName.serviceName", for single service integrations it will be
+  # "integrationName".
+  networks:
+    shared:
+      type: bridge
+
+  # configure DNS rules to apply to all containers.
+  extraHosts:
+    - "google.com:127.0.0.1"
 ```
 
 ## FAQ
