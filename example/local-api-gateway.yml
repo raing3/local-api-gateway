@@ -3,7 +3,6 @@ name: example-local-api-gateway
 gateway:
   host: 127.0.0.1
   port: 8082
-  source: ../packages/gateway
 
 middleware:
   cors:
