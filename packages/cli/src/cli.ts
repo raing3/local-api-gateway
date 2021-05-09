@@ -11,25 +11,16 @@ import { getVersion } from './utils/get-version';
 import { getDockerComposeVersion } from './utils/get-docker-compose-version';
 import { formatLintResults, lint } from './linter/lint';
 import path from 'path';
-import {Context} from "./types";
 
 const minDockerComposeVersion = '1.25.5';
-let loadedContext: Context|null = null;
-
-const loadContext = () => {
-    if (loadedContext === null) {
-        loadedContext = createContext('local-api-gateway.yml');
-    }
-
-    return loadedContext;
-};
+const context = createContext('local-api-gateway.yml');
 
 const dockerComposePassthrough = async (args: string[]) => {
     try {
         const command = `docker-compose ${args.join(' ')}`;
 
         console.log('Executing command:', chalk.black.bgWhite(command));
-        await execa(command, { shell: true, stdio: 'inherit', cwd: loadContext().directories.build });
+        await execa(command, { shell: true, stdio: 'inherit', cwd: context.directories.build });
     } catch (error) {
         console.log(error.message);
     }
@@ -69,7 +60,6 @@ program
         const args = [...program.args];
         const dockerComposeVersion = await getDockerComposeVersion();
         const noBuildConfigIndex = args.indexOf('--no-build-config');
-        const context = loadContext();
 
         console.log('Local API gateway version ', chalk.black.bgWhite(getVersion()));
         console.log('Docker compose version ', chalk.black.bgWhite(dockerComposeVersion || 'unknown'));

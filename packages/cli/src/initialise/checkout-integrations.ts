@@ -19,7 +19,7 @@ export const checkoutIntegrations = async (context: Context): Promise<void> => {
             continue;
         }
 
-        console.log('Checkout out:', chalk.black.bgWhite(integration.config.source.url));
+        console.log('Checking out:', chalk.black.bgWhite(integration.config.source.url));
 
         await execa(
             'git',
