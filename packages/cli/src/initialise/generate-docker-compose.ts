@@ -323,9 +323,9 @@ const addLabels = (context: Context) => {
 
         Object.entries(dockerCompose.services).forEach(([serviceName, service]) => {
             service.labels = {
-                ...(service.labels || {}),
-                'com.local-api-gateway.integration_name': integration.name,
-                'com.local-api-gateway.original_service_name': resolveOriginalServiceName(integration, serviceName)
+                ...service.labels || {},
+                'com.local-api-gateway.integration_name': integration.name, // eslint-disable-line
+                'com.local-api-gateway.original_service_name': resolveOriginalServiceName(integration, serviceName) // eslint-disable-line
             };
         });
     });

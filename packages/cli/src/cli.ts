@@ -11,7 +11,7 @@ import { getVersion } from './utils/get-version';
 import { getDockerComposeVersion } from './utils/get-docker-compose-version';
 import { formatLintResults, lint } from './linter/lint';
 import path from 'path';
-import {getContainerIds} from "./utils/get-container-id";
+import { getContainerIds } from './utils/get-container-id';
 
 const minDockerComposeVersion = '1.25.5';
 const context = createContext('local-api-gateway.yml');
@@ -51,11 +51,11 @@ program
 program
     .command('ssh [service]')
     .action(async (service: string) => {
-        const [ integrationName, serviceName ] = service.split('.');
+        const [integrationName, serviceName] = service.split('.');
         const filters = [`label=com.local-api-gateway.integration_name=${integrationName}`];
 
         if (serviceName) {
-            filters.push(`label=com.local-api-gateway.original_service_name=${serviceName}`)
+            filters.push(`label=com.local-api-gateway.original_service_name=${serviceName}`);
         }
 
         const containerIds = await getContainerIds(filters);
