@@ -13,6 +13,7 @@ import { clone } from '@local-api-gateway/utils';
 import { resolveNewNetworkName } from '../utils/resolve-new-network-name';
 import { resolveNewServiceName } from '../utils/resolve-new-service-name';
 import { resolveOriginalServiceName } from '../utils/resolve-original-service-name';
+import { toSnakeCase } from '../utils/to-snake-case';
 
 const resolvePaths = (dockerCompose: DockerCompose, integration: IntegrationContext, buildPath: string) => {
     const resolvePath = (...pathSegments: string[]): string => {
@@ -31,10 +32,21 @@ const resolvePaths = (dockerCompose: DockerCompose, integration: IntegrationCont
         }
 
         if (service.volumes) {
-            Object.values(service.volumes).forEach(volume => {
-                if (typeof volume === 'object') {
+            service.volumes = service.volumes.map(volume => {
+                if (typeof volume === 'string' && volume.match(/^\..?:/)) {
+                    // Short syntax, path on the host, relative to the compose file
+                    // https://docs.docker.com/compose/compose-file/compose-file-v3/#short-syntax-3
+                    const parts = volume.split(':');
+
+                    parts[0] = resolvePath(parts[0]);
+                    volume = parts.join(':');
+                } else if (typeof volume === 'object') {
+                    // Long syntax
+                    // https://docs.docker.com/compose/compose-file/compose-file-v3/#long-syntax-3
                     volume.source = resolvePath(volume.source);
                 }
+
+                return volume;
             });
         }
     });
@@ -312,20 +324,18 @@ const injectIntegrationConfiguration = (context: Context, dockerCompose: DockerC
                     ];
                 }
 
-                if (service.networks.length > 0) {
+                if (Object.keys(service.networks).length > 0) {
                     const networks = dockerCompose.services[service.name].networks || {};
 
-                    service.networks.forEach(originalNetworkName => {
+                    if (networks instanceof Array) {
+                        throw new Error(`Cannot configure networks on service "${service.name}".`);
+                    }
+
+                    Object.entries(service.networks).forEach(([originalNetworkName, network]) => {
                         const networkName = `${context.config.name}.${originalNetworkName}`;
 
-                        if (networks instanceof Array) {
-                            throw new Error(`Cannot configure networks on service "${service.name}".`);
-                        }
-
-                        networks[networkName] = {};
+                        networks[networkName] = network;
                     });
-
-                    dockerCompose.services[service.name].networks = networks;
                 }
             });
         }
@@ -365,14 +375,18 @@ const populateConfig = (context: Context) => {
                 integration.config.services[serviceName] = {
                     name: serviceName,
                     ports: [],
-                    networks: [],
+                    networks: {},
                     routes: []
                 };
             }
 
-            integration.config.services[serviceName].name = numServices === 1 ?
-                integrationName :
-                `${integrationName}.${serviceName}`;
+            // Docker has issues with uppercase characters in service names, convert to snake case.
+            // https://github.com/docker/compose/issues/1416
+            integration.config.services[serviceName].name = toSnakeCase(
+                numServices === 1 ?
+                    integrationName :
+                    `${integrationName}.${serviceName}`
+            );
         });
 
         // make sure all configured services exist.

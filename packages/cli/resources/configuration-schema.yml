@@ -97,10 +97,23 @@ definitions:
       type: array
       items:
         type: string
-    Networks:
+    NetworksArray:
       type: array
       items:
         type: string
+    NetworksDictionary:
+      type: object
+      additionalProperties:
+        type: object
+        properties:
+          aliases:
+            type: array
+            items:
+              type: string
+    Networks:
+      oneOf:
+        - $ref: "#/definitions/Integrations/NetworksArray"
+        - $ref: "#/definitions/Integrations/NetworksDictionary"
     Type:
       type: string
       enum: [docker, docker-compose]

@@ -1,7 +1,7 @@
 import { parse } from 'yaml';
 import fs from 'fs';
 import { Config } from '@local-api-gateway/types';
-import { Dictionary } from '@local-api-gateway/types/src';
+import { Dictionary, IntegrationNetworkConfig } from '@local-api-gateway/types/src';
 
 export const parseConfig = (configPath: string): Config => {
     if (!fs.existsSync(configPath)) {
@@ -68,7 +68,21 @@ export const parseConfig = (configPath: string): Config => {
             Object.values(integration.services as Dictionary<any>).forEach(service => {
                 service.routes = service.routes || [];
                 service.ports = service.ports || [];
-                service.networks = service.networks || [];
+                service.networks = service.networks || {};
+
+                if (service.networks instanceof Array) {
+                    service.networks = (service.networks as string[]).reduce((normalised, network) => {
+                        normalised[network] = {
+                            aliases: []
+                        };
+
+                        return normalised;
+                    }, {} as Dictionary<IntegrationNetworkConfig>);
+                } else {
+                    Object.values(service.networks as Dictionary<any>).forEach(network => {
+                        network.aliases = network.aliases || [];
+                    });
+                }
             });
 
             config.integrations[integrationName] = integration;

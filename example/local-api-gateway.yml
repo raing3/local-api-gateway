@@ -60,7 +60,9 @@ integrations:
               - "/example6"
               - "/example6/*"
         networks:
-          - shared
+          shared:
+            aliases:
+              - aliased_cross_integration_network_container1
         ports:
           - 8083:80
 networks:

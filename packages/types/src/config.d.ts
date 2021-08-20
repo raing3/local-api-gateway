@@ -19,10 +19,14 @@ export type VcsSource = {
     url: string;
 };
 
+export type IntegrationNetworkConfig = {
+    aliases: string[];
+};
+
 export type IntegrationServiceConfig = {
     name: string;
     ports: string[];
-    networks: string[];
+    networks: Dictionary<IntegrationNetworkConfig>;
     routes: RouteConfig[];
 };
 

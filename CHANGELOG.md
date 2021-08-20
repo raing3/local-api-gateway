@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 0.3.3 - 2021-08-20
+### Fixed
+ - CLI: Network aliases in the `local-api-gateway.yml` file are now supported and can be specified in a similar manner
+   to how they are specified in docker-compose.yml.
+ - CLI: Relative volume paths are now resolved when using the short syntax.
+ - CLI: Service names in the compiled docker-compose.yml are now converted to lower case to avoid issues with Docker.
+   Relates to: https://github.com/docker/compose/issues/1416
+
 ## 0.3.2 - 2021-05-09
 ### Changed
  - CLI: Reverted changes from 0.3.1.

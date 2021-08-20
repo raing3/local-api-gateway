@@ -106,7 +106,9 @@ integrations:
             - "/example"
             - "/example/*"
         networks:
-         - shared
+          shared:
+            aliases:
+              - docker-compose-integration-alias
 
   dockerIntegration:
     type: docker # identifies that this is a docker based integration.
