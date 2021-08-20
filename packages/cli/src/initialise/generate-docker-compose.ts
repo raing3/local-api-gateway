@@ -33,7 +33,7 @@ const resolvePaths = (dockerCompose: DockerCompose, integration: IntegrationCont
 
         if (service.volumes) {
             service.volumes = service.volumes.map(volume => {
-                if (typeof volume === 'string' && volume.match(/^\..?:/)) {
+                if (typeof volume === 'string' && volume.match(/^\..*?:/)) {
                     // Short syntax, path on the host, relative to the compose file
                     // https://docs.docker.com/compose/compose-file/compose-file-v3/#short-syntax-3
                     const parts = volume.split(':');
@@ -313,6 +313,24 @@ const fixDependsOn = (context: Context) => {
     });
 };
 
+const addLabels = (context: Context) => {
+    Object.values(context.integrations).forEach(integration => {
+        const dockerCompose = integration.dockerCompose!;
+
+        if (integration.type === 'gateway') {
+            return;
+        }
+
+        Object.entries(dockerCompose.services).forEach(([serviceName, service]) => {
+            service.labels = {
+                ...(service.labels || {}),
+                'com.local-api-gateway.integration_name': integration.name,
+                'com.local-api-gateway.original_service_name': resolveOriginalServiceName(integration, serviceName)
+            };
+        });
+    });
+};
+
 const injectIntegrationConfiguration = (context: Context, dockerCompose: DockerCompose): DockerCompose => {
     Object.values(context.integrations).forEach(integration => {
         if ('config' in integration) {
@@ -417,6 +435,7 @@ export const generateDockerCompose = (context: Context): DockerCompose => {
     createDefaultNetworks(context);
     createGatewayNetworks(context);
     fixDependsOn(context);
+    addLabels(context);
 
     return injectIntegrationConfiguration(context, mergeDockerComposes(context));
 };

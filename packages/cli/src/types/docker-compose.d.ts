@@ -21,6 +21,7 @@ export type DockerComposeServiceNetwork = {
 
 export type DockerComposeService = {
     image?: string;
+    labels?: Dictionary<string>;
     build?: string|DockerComposeServiceBuild;
     working_dir?: string;
     command?: string;

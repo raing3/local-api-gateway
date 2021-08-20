@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 0.3.4 - 2021-08-20
+### Fixed
+ - CLI: Fixed bad regex being used for detecting relative path in simple volume definition.
+ - CLI: Fixed issue SSH'ing into integration using the original integration name.
+
 ## 0.3.3 - 2021-08-20
 ### Fixed
  - CLI: Network aliases in the `local-api-gateway.yml` file are now supported and can be specified in a similar manner

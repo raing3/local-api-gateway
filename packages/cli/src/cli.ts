@@ -11,13 +11,14 @@ import { getVersion } from './utils/get-version';
 import { getDockerComposeVersion } from './utils/get-docker-compose-version';
 import { formatLintResults, lint } from './linter/lint';
 import path from 'path';
+import {getContainerIds} from "./utils/get-container-id";
 
 const minDockerComposeVersion = '1.25.5';
 const context = createContext('local-api-gateway.yml');
 
-const dockerComposePassthrough = async (args: string[]) => {
+const passthrough = async (executable: string, args: string[]) => {
     try {
-        const command = `docker-compose ${args.join(' ')}`;
+        const command = `${executable} ${args.join(' ')}`;
 
         console.log('Executing command:', chalk.black.bgWhite(command));
         await execa(command, { shell: true, stdio: 'inherit', cwd: context.directories.build });
@@ -50,7 +51,20 @@ program
 program
     .command('ssh [service]')
     .action(async (service: string) => {
-        await dockerComposePassthrough([`exec "${service}" /bin/sh`]);
+        const [ integrationName, serviceName ] = service.split('.');
+        const filters = [`label=com.local-api-gateway.integration_name=${integrationName}`];
+
+        if (serviceName) {
+            filters.push(`label=com.local-api-gateway.original_service_name=${serviceName}`)
+        }
+
+        const containerIds = await getContainerIds(filters);
+
+        if (containerIds.length === 0) {
+            throw new Error(`"${service}" is an invalid service name.`);
+        }
+
+        await passthrough('docker', [`exec -it "${containerIds[0]}" /bin/sh`]);
     });
 
 program
@@ -81,7 +95,7 @@ program
             args.unshift(`-f ${context.files.dockerCompose}`);
         }
 
-        await dockerComposePassthrough(args);
+        await passthrough('docker-compose', args);
     });
 
 if (process.argv.length > 2) {
