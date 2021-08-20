@@ -1,6 +1,6 @@
 {
   "name": "@local-api-gateway/gateway",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Gateway",
   "author": "Richard Ainger <raing3@gmail.com>",
   "license": "MIT",
@@ -22,8 +22,8 @@
     "lint:fix": "eslint --ext .ts ./src --fix"
   },
   "devDependencies": {
-    "@local-api-gateway/types": "^0.3.2",
-    "@local-api-gateway/utils": "^0.3.2",
+    "@local-api-gateway/types": "^0.3.3",
+    "@local-api-gateway/utils": "^0.3.3",
     "@raing3/eslint-config": "^0.2.3",
     "@types/cors": "^2.8.10",
     "@types/express": "^4.17.11",
