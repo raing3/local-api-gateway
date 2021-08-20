@@ -36,7 +36,6 @@ export const parseConfig = (configPath: string): Config => {
     if (parsed?.integrations) {
         Object.entries(parsed.integrations as Dictionary<any>).forEach(([integrationName, integration]) => {
             integration = integration || {};
-            integration.services = integration.services || {};
 
             if (integration.source?.type === 'path') {
                 integration.destination = integration.source.url;
@@ -62,6 +61,8 @@ export const parseConfig = (configPath: string): Config => {
                 delete integration.routes;
                 delete integration.ports;
                 delete integration.networks;
+            } else if (!integration.services) {
+                integration.services = {};
             }
 
             Object.values(integration.services as Dictionary<any>).forEach(service => {

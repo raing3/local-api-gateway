@@ -354,6 +354,8 @@ const injectIntegrationConfiguration = (context: Context, dockerCompose: DockerC
 
                         networks[networkName] = network;
                     });
+
+                    dockerCompose.services[service.name].networks = networks;
                 }
             });
         }

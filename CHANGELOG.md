@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
  - CLI: Fixed bad regex being used for detecting relative path in simple volume definition.
  - CLI: Fixed issue SSH'ing into integration using the original integration name.
+ - CLI: Fixed issue where Networks from `local-api-gateway.yml` were not being added to the services in the merged
+   `docker-compose.yml` if the original service definition lacked any networks.
 
 ## 0.3.3 - 2021-08-20
 ### Fixed
