@@ -15,7 +15,7 @@ As part of the merge process the following changes are made to the input `docker
 
 ## Prerequisites
 Before installing this tool you need to install:
- * Node 10+
+ * Node 12+
  * NPM 6+
  * Docker 19+
  * Docker Compose 1.25.5+
