@@ -5,11 +5,11 @@ import {
     DockerComposeServiceNetwork,
     IntegrationContext
 } from '../types';
+import { clone } from '@local-api-gateway/utils';
+import compareVersions from 'compare-versions';
 import { Dictionary } from '@local-api-gateway/types';
 import { getIntegrationHandler } from '../integration-handler';
 import path from 'path';
-import compareVersions from 'compare-versions';
-import { clone } from '@local-api-gateway/utils';
 import { resolveNewNetworkName } from '../utils/resolve-new-network-name';
 import { resolveNewServiceName } from '../utils/resolve-new-service-name';
 import { resolveOriginalServiceName } from '../utils/resolve-original-service-name';

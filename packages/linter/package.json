@@ -1,35 +1,38 @@
 {
-  "name": "@local-api-gateway/utils",
+  "name": "@local-api-gateway/linter",
   "version": "0.3.4",
-  "description": "Utils",
+  "description": "Linter",
   "author": "Richard Ainger <raing3@gmail.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/raing3/local-api-gateway.git",
-    "directory": "packages/utils"
+    "directory": "packages/linter"
   },
+  "main": "dist/index.js",
   "scripts": {
     "clean": "rimraf ./dist",
     "build": "npm run clean && tsc",
     "build:watch": "npm run clean && tsc -w",
-    "prepack": "npm run build",
     "lint": "eslint --ext .ts ./src",
-    "lint:fix": "eslint --ext .ts ./src --fix"
-  },
-  "main": "dist/index.js",
-  "types": "dist/index.d.js",
-  "dependencies": {
-    "yaml": "^1.10.2"
+    "lint:fix": "eslint --ext .ts ./src --fix",
+    "prepack": "npm run build"
   },
   "devDependencies": {
-    "@local-api-gateway/types": "^0.3.4",
     "@raing3/eslint-config": "^0.3.0",
+    "@types/esm": "^3.2.0",
     "@types/node": "^16.11.4",
     "@typescript-eslint/eslint-plugin": "^5.1.0",
     "@typescript-eslint/parser": "^5.1.0",
     "eslint": "^8.1.0",
     "rimraf": "^3.0.2",
     "typescript": "^4.4.4"
+  },
+  "dependencies": {
+    "@stoplight/spectral-cli": "^6.1.0",
+    "@stoplight/spectral-core": "^1.6.0",
+    "@stoplight/spectral-functions": "^1.4.0",
+    "@stoplight/spectral-parsers": "^1.0.1",
+    "esm": "^3.2.25"
   }
 }

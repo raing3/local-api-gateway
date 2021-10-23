@@ -1,7 +1,7 @@
-import execa from 'execa';
-import { Context } from '../types';
-import fs from 'fs';
 import chalk from 'chalk';
+import { Context } from '../types';
+import execa from 'execa';
+import fs from 'fs';
 
 export const checkoutIntegrations = async (context: Context): Promise<void> => {
     for (const integrationName in context.integrations) {

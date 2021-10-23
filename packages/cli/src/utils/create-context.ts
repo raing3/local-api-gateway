@@ -1,6 +1,6 @@
 import { Context } from '../types';
-import path from 'path';
 import { parseConfig } from '@local-api-gateway/utils';
+import path from 'path';
 
 export const createContext = (configPath: string): Context => {
     const config = parseConfig(configPath);

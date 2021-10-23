@@ -8,7 +8,7 @@ export type DockerComposeServiceBuild = string|{
 };
 
 export type DockerComposeServiceVolume = string|{
-    type: 'bind',
+    type: 'bind';
     source: string;
     target: string;
 };

@@ -1,8 +1,8 @@
-import { DockerIntegrationHandler } from './docker-integration-handler';
 import { IntegrationContext, IntegrationHandler } from '../types';
 import { Dictionary } from '@local-api-gateway/types';
-import { GatewayIntegrationHandler } from './gateway-integration-handler';
 import { DockerComposeIntegrationHandler } from './docker-compose-integration-handler';
+import { DockerIntegrationHandler } from './docker-integration-handler';
+import { GatewayIntegrationHandler } from './gateway-integration-handler';
 
 const handlers: Dictionary<IntegrationHandler> = {
     docker: new DockerIntegrationHandler(),

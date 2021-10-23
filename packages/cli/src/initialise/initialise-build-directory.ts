@@ -1,8 +1,8 @@
-import { generateDockerCompose } from './generate-docker-compose';
-import fs from 'fs';
-import yaml from 'yaml';
 import { Context } from '../types';
+import fs from 'fs';
+import { generateDockerCompose } from './generate-docker-compose';
 import { generateGatewayDockerfile } from './generate-gateway-dockerfile';
+import yaml from 'yaml';
 
 export const initialiseBuildDirectory = (context: Context): void => {
     const buildDirectory = context.directories.build;
