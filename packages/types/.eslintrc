@@ -1,15 +1,9 @@
 {
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "@raing3/eslint-config",
-    "@raing3/eslint-config/typescript"
-  ],
+  "extends": ["@raing3/eslint-config/typescript"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "project": "./tsconfig.json"
   },
-  "plugins": ["@typescript-eslint"],
   "reportUnusedDisableDirectives": true,
   "env": {
     "es6": true,

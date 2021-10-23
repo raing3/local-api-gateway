@@ -1,7 +1,7 @@
-import { parse } from 'yaml';
-import fs from 'fs';
-import { Config } from '@local-api-gateway/types';
 import { Dictionary, IntegrationNetworkConfig } from '@local-api-gateway/types/src';
+import { Config } from '@local-api-gateway/types';
+import fs from 'fs';
+import { parse } from 'yaml';
 
 export const parseConfig = (configPath: string): Config => {
     if (!fs.existsSync(configPath)) {
@@ -71,13 +71,16 @@ export const parseConfig = (configPath: string): Config => {
                 service.networks = service.networks || {};
 
                 if (service.networks instanceof Array) {
-                    service.networks = (service.networks as string[]).reduce((normalised, network) => {
+                    service.networks = (service.networks as string[]).reduce<Dictionary<IntegrationNetworkConfig>>((
+                        normalised,
+                        network
+                    ) => {
                         normalised[network] = {
                             aliases: []
                         };
 
                         return normalised;
-                    }, {} as Dictionary<IntegrationNetworkConfig>);
+                    }, {});
                 } else {
                     Object.values(service.networks as Dictionary<any>).forEach(network => {
                         network.aliases = network.aliases || [];

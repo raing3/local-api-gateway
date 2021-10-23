@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 
-import program from 'commander';
+import { formatLintResults, lint } from '@local-api-gateway/linter';
+import chalk from 'chalk';
 import compareVersions from 'compare-versions';
 import { createContext } from './utils/create-context';
-import { initialise } from './initialise';
 import execa from 'execa';
 import fs from 'fs';
-import chalk from 'chalk';
-import { getVersion } from './utils/get-version';
-import { getDockerComposeVersion } from './utils/get-docker-compose-version';
-import { formatLintResults, lint } from './linter/lint';
-import path from 'path';
 import { getContainerIds } from './utils/get-container-id';
+import { getDockerComposeVersion } from './utils/get-docker-compose-version';
+import { getVersion } from './utils/get-version';
+import { initialise } from './initialise';
+import path from 'path';
+import { program } from 'commander';
 
 const minDockerComposeVersion = '1.25.5';
 const context = createContext('local-api-gateway.yml');
@@ -22,8 +22,8 @@ const passthrough = async (executable: string, args: string[]) => {
 
         console.log('Executing command:', chalk.black.bgWhite(command));
         await execa(command, { shell: true, stdio: 'inherit', cwd: context.directories.build });
-    } catch (error) {
-        console.log(error.message);
+    } catch (error: any) {
+        console.log(error?.message);
     }
 };
 
@@ -31,7 +31,7 @@ program
     .command('lint')
     .action(async () => {
         try {
-            const rulesetPath = path.join(process.cwd(), '/local-api-gateway.lint.yml');
+            const rulesetPath = path.join(process.cwd(), '/local-api-gateway.lint.js');
             const results = await lint({
                 configurationPath: path.join(process.cwd(), '/local-api-gateway.yml'),
                 rulesetPath: fs.existsSync(rulesetPath) ? rulesetPath : undefined
@@ -39,12 +39,12 @@ program
 
             if (results.length > 0) {
                 console.log(formatLintResults(results));
-                process.exit(1); // eslint-disable-line no-process-exit
+                process.exit(1);
             } else {
                 console.log('No linting issues were found!');
             }
-        } catch (error) {
-            console.log(error.message);
+        } catch (error: any) {
+            console.log(error?.message);
         }
     });
 

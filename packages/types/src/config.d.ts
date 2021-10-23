@@ -15,7 +15,7 @@ export type PathSource = {
 };
 
 export type VcsSource = {
-    type: 'vcs',
+    type: 'vcs';
     url: string;
 };
 
@@ -73,7 +73,7 @@ export type Config = {
         host: string;
         port: number;
         source?: string;
-    },
+    };
     middleware: Dictionary<MiddlewareConfig> & {
         traceId: TraceIdMiddlewareConfig;
         cors: CorsMiddlewareConfig;

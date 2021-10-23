@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2015",
     "module": "commonjs",
     "declaration": true,
     "outDir": "./dist",
@@ -9,15 +9,9 @@
     "experimentalDecorators": true,
     "removeComments": true,
     "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "typeRoots": [
-      "./node_modules/@types"
-    ]
+    "esModuleInterop": true
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "src/**/__tests__/*"
+  "files": [
+    "src/cli.ts"
   ]
 }

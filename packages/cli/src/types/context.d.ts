@@ -39,7 +39,7 @@ export type Context = {
     config: Config;
     network: {
         name: string;
-    }
+    };
     gateway: GatewayIntegrationContext;
     integrations: Dictionary<IntegrationContext>;
     directories: {
@@ -50,5 +50,5 @@ export type Context = {
         dockerCompose: string;
         gatewayConfig: string;
         gatewayDockerfile: string;
-    }
+    };
 };

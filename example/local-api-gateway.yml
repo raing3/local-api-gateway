@@ -3,6 +3,7 @@ name: example-local-api-gateway
 gateway:
   host: 127.0.0.1
   port: 8082
+  # source: ../packages/gateway # uncomment to run the locally checked out gateway code.
 
 middleware:
   cors:
@@ -11,18 +12,6 @@ middleware:
     path: ./middleware/die-on-access-die-route.js
 
 integrations:
-  docker:
-    type: docker
-    source:
-      type: path
-      url: ./docker-example
-    routes:
-      - port: 80
-        paths:
-          - "/example"
-          - "/example/*"
-    networks:
-      - shared
   dockerCompose:
     type: docker-compose
     source:
@@ -65,6 +54,18 @@ integrations:
               - aliased_cross_integration_network_container1
         ports:
           - 8083:80
+  docker:
+    type: docker
+    source:
+      type: path
+      url: ./docker-example
+    routes:
+      - port: 80
+        paths:
+          - "/example"
+          - "/example/*"
+    networks:
+      - shared
 networks:
   shared:
     driver: bridge
