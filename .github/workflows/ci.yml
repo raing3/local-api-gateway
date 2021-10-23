@@ -1,0 +1,9 @@
+name: CI
+
+on: [push, workflow_dispatch]
+
+jobs:
+  ci:
+    uses: raing3/actions/.github/workflows/js-ci.yml@master
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
